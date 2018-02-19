@@ -12,14 +12,14 @@
  *  @license   license.txt
 *}
 {if $shmoPntrstPnWdgt.SHMO_PINTEREST_PIN_WIDGET}
-<div id="pinterest-pin-widget">
-	<a
-	data-pin-do="embedPin"
-	data-pin-lang="{$shmoPntrstPnWdgt.SHMO_PINTEREST_PIN_WIDGET_LANGUAGE|data:'html':'UTF-8'}"
-	data-pin-width="{$shmoPntrstPnWdgt.SHMO_PINTEREST_PIN_WIDGET_SIZE|data:'html':'UTF-8'}"
-	{if $shmoPntrstPnWdgt.SHMO_PINTEREST_PIN_WIDGET_HIDE_DESC}data-pin-terse="true"{/if}
-	href="{$shmoPntrstPnWdgt.SHMO_PINTEREST_PIN_WIDGET_URL|data:'html':'UTF-8'}"
-	>
-	</a>
-</div>
+    <div id="pinterest-pin-widget">
+        <a
+                data-pin-do="embedPin"
+                data-pin-lang="{$shmoPntrstPnWdgt.SHMO_PINTEREST_PIN_WIDGET_LANGUAGE|data:'html':'UTF-8'}"
+                data-pin-width="{$shmoPntrstPnWdgt.SHMO_PINTEREST_PIN_WIDGET_SIZE|data:'html':'UTF-8'}"
+                {if $shmoPntrstPnWdgt.SHMO_PINTEREST_PIN_WIDGET_HIDE_DESC}data-pin-terse="true"{/if}
+                href="{$shmoPntrstPnWdgt.SHMO_PINTEREST_PIN_WIDGET_URL|data:'html':'UTF-8'}"
+        >
+        </a>
+    </div>
 {/if}
