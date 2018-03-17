@@ -1,7 +1,5 @@
 <?php if (!defined('_PS_VERSION_')) exit;
 
-require_once __DIR__ . '/backendhelperform.php';
-
 /**
  * Class PinterestPinWidget
  */
@@ -29,7 +27,7 @@ class PinterestPinWidget extends Module
     public function __construct() {
         $this->name = 'pinterestpinwidget';
         $this->tab = 'front_office_features';
-        $this->version = '1.0.2';
+        $this->version = '1.0.3';
         $this->author = 'Andre Matthies';
         $this->need_instance = 0;
         $this->bootstrap = true;
@@ -98,6 +96,7 @@ class PinterestPinWidget extends Module
      * @return mixed
      */
     public function displayForm() {
+        require_once _MODULE_DIR_ . $this->name . '/backendhelperform.php';
         return (new BackendHelperForm($this->name))->generate();
     }
 
