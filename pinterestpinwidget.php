@@ -27,7 +27,7 @@ class PinterestPinWidget extends Module
     public function __construct() {
         $this->name = 'pinterestpinwidget';
         $this->tab = 'front_office_features';
-        $this->version = '1.0.3';
+        $this->version = '1.0.4';
         $this->author = 'Andre Matthies';
         $this->need_instance = 0;
         $this->bootstrap = true;
@@ -36,6 +36,8 @@ class PinterestPinWidget extends Module
 
         $this->displayName = $this->l('Pinterest Pin Widget');
         $this->description = $this->l('Adds a block with Pinterest Pin Widget');
+
+        $this->__moduleDir = dirname(__FILE__);
     }
 
     /**
@@ -43,8 +45,12 @@ class PinterestPinWidget extends Module
      */
     public function install() {
         if (Shop::isFeatureActive()) Shop::setContext(Shop::CONTEXT_ALL);
-        return parent::install()
-            && $this->installConfig()
+
+        if (!parent::install()) return false;
+
+        foreach ($this->config as $k => $v) Configuration::updateValue($k, $v);
+
+        return $this->registerHook('actionAdminControllerSetMedia')
             && $this->registerHook('displayFooter');
     }
 
@@ -52,61 +58,37 @@ class PinterestPinWidget extends Module
      * @return bool
      */
     public function uninstall() {
-        return parent::uninstall()
-            && $this->removeConfig();
-    }
+        parent::uninstall();
 
-    /**
-     * @return bool
-     */
-    private function installConfig() {
-        foreach ($this->config as $k => $v) Configuration::updateValue($k, $v);
+        foreach ($this->config as $k) Configuration::deleteByName($k);
+
         return true;
-    }
-
-    /**
-     * @return bool
-     */
-    private function removeConfig() {
-        foreach ($this->config as $k => $v) Configuration::deleteByName($k);
-        return true;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getConfig() {
-        return Configuration::getMultiple(array_keys($this->config));
     }
 
     /**
      * @return string
      */
     public function getContent() {
+        require_once $this->__moduleDir . '/backendhelperform.php';
+
         $output = null;
-        if (Tools::isSubmit('submitpinterestpinwidget')) {
-            foreach (Tools::getValue('config') as $key => $value) Configuration::updateValue($key, $value);
-            if ($this->errors) $output .= $this->displayError(implode($this->errors, '<br/>'));
+
+        if (Tools::isSubmit('submit' . $this->name)) {
+            foreach (Tools::getValue('config') as $k => $v) Configuration::updateValue($k, $v);
+            if ($this->errors) $output .= $this->displayError(implode($this->errors, '<br>'));
             else $output .= $this->displayConfirmation($this->l('Settings updated'));
         }
-        return $output . $this->displayForm();
-    }
 
-    /**
-     * @return mixed
-     */
-    public function displayForm() {
-        require_once _MODULE_DIR_ . $this->name . '/backendhelperform.php';
-        return (new BackendHelperForm($this->name))->generate();
+        return $output . (new BackendHelperForm($this->name))->generate();
     }
 
     /**
      * @return mixed
      */
     public function hookDisplayFooter() {
-        $this->context->smarty->assign($this->getConfig());
+        $this->context->smarty->assign(Configuration::getMultiple(array_keys($this->config)));
         if (Configuration::get('PINTEREST_PIN_WIDGET')) $this->context->controller->addJS('//assets.pinterest.com/js/pinit.js');
-        return $this->display(__FILE__, 'pinterestpinwidget.tpl');
+        return $this->display(__FILE__, $this->name . '.tpl');
     }
 
     /**
@@ -135,5 +117,13 @@ class PinterestPinWidget extends Module
      */
     public function hookDisplayHome() {
         return $this->hookDisplayFooter();
+    }
+
+    /**
+     *
+     */
+    public function hookActionAdminControllerSetMedia() {
+        $this->context->controller->addJqueryPlugin('validate');
+        $this->context->controller->addJS($this->__moduleDir . '/views/js/backend.js');
     }
 }

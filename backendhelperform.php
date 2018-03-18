@@ -85,7 +85,7 @@ class BackendHelperForm extends HelperForm {
                     'name' => 'config[PINTEREST_PIN_WIDGET_URL]',
                     'label' => $this->l('Pin Widget URL'),
                     'hint' => 'e.g. https://www.pinterest.com/pin/99360735500167749/',
-                    'required' => false
+                    'required' => true
                 ],
                 [
                     'type' => 'select',
